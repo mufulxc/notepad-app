@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 const DEBOUNCE_MS = 250  // 输入停止 250ms 后自动搜索
@@ -9,6 +9,12 @@ export default function Inventory() {
   const [total, setTotal] = useState(null)       // null = 还没搜过
   const [loading, setLoading] = useState(false)
   const timerRef = useRef(null)
+  const inputRef = useRef(null)
+
+  // 切换到库存查询时自动聚焦输入框
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   const doSearch = useCallback(async (kw) => {
     if (!kw) {
@@ -59,6 +65,7 @@ export default function Inventory() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
         <input
+          ref={inputRef}
           type="text"
           value={keyword}
           onChange={handleInputChange}
