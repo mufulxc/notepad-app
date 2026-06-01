@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import Notepad from './components/Notepad'
 import Inventory from './components/Inventory'
+import IbrkQuery from './components/IbrkQuery'
 import PasswordGate from './components/PasswordGate'
 
 const tabs = [
   { key: 'notes', label: '📝 记事本' },
   { key: 'stock', label: '📦 库存查询' },
+  { key: 'ibkr', label: '💰 交易查询' },
 ]
 
 export default function App() {
@@ -48,7 +50,7 @@ export default function App() {
 
         {/* 内容区 */}
         <main className="max-w-3xl mx-auto px-4 py-6">
-          {activeTab === 'notes' ? <Notepad /> : <Inventory />}
+          {activeTab === 'notes' ? <Notepad /> : activeTab === 'stock' ? <Inventory /> : <IbrkQuery />}
         </main>
 
         {/* 底部信息 */}
