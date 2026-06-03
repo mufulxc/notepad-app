@@ -67,7 +67,6 @@ export default function Inventory() {
       .select('*', { count: 'exact' })
       .eq('品牌', brand)
       .order('库存量', { ascending: false })
-      .limit(20)
 
     if (!error) {
       setResults(data || [])
@@ -137,7 +136,6 @@ export default function Inventory() {
       .eq('品牌', brand)
       .or(`产品名称.ilike.${pattern},英文代码.ilike.${pattern}`)
       .order('库存量', { ascending: false })
-      .limit(20)
 
     if (!error) {
       setResults(data || [])
@@ -226,7 +224,7 @@ export default function Inventory() {
           <p className="text-xs text-stone-400 mb-4">
             找到 <span className="font-semibold text-stone-600">{total}</span> 条结果
             {activeBrand && <span className="text-stone-300"> · 品牌：{activeBrand}</span>}
-            {results.length < total && `（显示前 ${results.length} 条，请细化关键字）`}
+            {!activeBrand && results.length < total && `（显示前 ${results.length} 条，请细化关键字）`}
           </p>
 
           {results.length === 0 ? (
@@ -251,15 +249,29 @@ export default function Inventory() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-medium text-stone-800 truncate">
-                            {item['产品名称']}
-                          </h3>
-                          <p className="text-xs text-stone-400 mt-0.5">
-                            代码：{item['英文代码']}
-                            {item['品牌'] && (
-                              <span className="ml-2 text-stone-300">| {item['品牌']}</span>
-                            )}
-                          </p>
+                          {/* 品牌模式下以型号（英文代码）为主，搜索模式下以产品名称为主 */}
+                          {activeBrand ? (
+                            <>
+                              <h3 className="text-sm font-semibold text-stone-800 truncate">
+                                {item['英文代码'] || item['产品名称']}
+                              </h3>
+                              <p className="text-xs text-stone-400 mt-0.5 truncate">
+                                {item['产品名称']}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <h3 className="text-sm font-medium text-stone-800 truncate">
+                                {item['产品名称']}
+                              </h3>
+                              <p className="text-xs text-stone-400 mt-0.5">
+                                代码：{item['英文代码']}
+                                {item['品牌'] && (
+                                  <span className="ml-2 text-stone-300">| {item['品牌']}</span>
+                                )}
+                              </p>
+                            </>
+                          )}
                         </div>
                         <div className="flex items-center gap-4 shrink-0">
                           <div className="text-right">
